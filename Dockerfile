@@ -2,16 +2,16 @@ FROM marina/centos7:7.0.1406_r2
 MAINTAINER sprin
 
 # Disable fastestmirror plugin and install Python deps
-RUN yum erase yum-fastestmirror.noarch \
-    && yum install -y \
-        tar \
-        gcc \
-        make \
-        zlib-devel \
-        openssl-devel \
-        sqlite-devel \
-        bzip2-devel \
-        libxslt-devel
+RUN yum install -y \
+    tar \
+    gcc \
+    make \
+    zlib-devel \
+    openssl-devel \
+    sqlite-devel \
+    bzip2-devel \
+    libxslt-devel \
+    postgresql-devel
 
 RUN mkdir /usr/src/python
 WORKDIR /usr/src/python
