@@ -2,6 +2,9 @@
 docker-python
 =============
 
+Hosted on the public registry at:
+`marina/python <https://registry.hub.docker.com/u/marina/python/>`_
+
 Built with the Dockerfile, then flattened to remove about 150 MB of cruft.
 
 .. code::
