@@ -1,7 +1,17 @@
-FROM marina/centos7:7.0.1406_r1
+FROM marina/centos7:7.0.1406_r2
 MAINTAINER sprin
 
-RUN yum install -y tar gcc make
+# Disable fastestmirror plugin and install Python deps
+RUN yum erase yum-fastestmirror.noarch \
+    && yum install -y \
+        tar \
+        gcc \
+        make \
+        zlib-devel \
+        openssl-devel \
+        sqlite-devel \
+        bzip2-devel \
+        libxslt-devel
 
 RUN mkdir /usr/src/python
 WORKDIR /usr/src/python
@@ -14,7 +24,10 @@ RUN ./configure \
     && make install \
     && make clean
 
+# Install pip
+RUN curl -Sl "https://bootstrap.pypa.io/get-pip.py" > get-pip.py
+RUN /usr/local/bin/python get-pip.py
+
 # Clean up steps prior to flattening
-RUN yum remove -y tar gcc make \
-    && yum clean all \
+RUN yum clean all \
     && rm -rf /usr/src/python
