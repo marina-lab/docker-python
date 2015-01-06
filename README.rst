@@ -5,14 +5,6 @@ docker-python
 Hosted on the public registry at:
 `marina/python <https://registry.hub.docker.com/u/marina/python/>`_
 
-Built with the Dockerfile, then flattened to remove about 150 MB of cruft.
-
-.. code::
-
-   docker build -t marina/python:2.7.8_r1_unflat .
-   export CONTAINER_ID=$(docker run -d marina/python:2.7.8_r1_unflat /bin/true)
-   docker export $CONTAINER_ID | docker import - marina/python:2.7.8_r1
-
 Will allow builds of many popular Python libaries with C extensions, including,
 but not limited to:
 

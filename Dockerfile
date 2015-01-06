@@ -1,7 +1,11 @@
-FROM marina/centos7:7.0.1406_r2
+FROM centos:7.0.1406
 MAINTAINER sprin
+# Inspired by docker-library/python
 
-# Disable fastestmirror plugin and install Python deps
+# Disable fastermirror plugin - not using it is actually faster.
+RUN sed -ri 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/fastestmirror.conf
+
+# Install Python deps
 RUN yum install -y \
     tar \
     gcc \
@@ -11,23 +15,26 @@ RUN yum install -y \
     sqlite-devel \
     bzip2-devel \
     libxslt-devel \
-    postgresql-devel
+    postgresql-devel \
+    && yum clean all
 
-RUN mkdir /usr/src/python
-WORKDIR /usr/src/python
-RUN curl -Sl "https://www.python.org/ftp/python/2.7.8/Python-2.7.8.tar.xz" \
-    | tar -xJ --strip-components=1
 # You may want to verify the download with gpg: https://www.python.org/download
-
-RUN ./configure \
+RUN set -x \
+    && mkdir -p /usr/src/python \
+    && curl -Sl "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz" \
+        | tar -xJC /usr/src/python --strip-components=1 \
+    && cd /usr/src/python \
+    && ./configure \
+        --enable-shared \
+         --prefix=/usr/local \
+        --with-ensurepip=install \
+        LDFLAGS="-Wl,-rpath /usr/local/lib" \
     && make  -j$(nproc) \
     && make install \
-    && make clean
-
-# Install pip
-RUN curl -Sl "https://bootstrap.pypa.io/get-pip.py" > get-pip.py
-RUN /usr/local/bin/python get-pip.py
-
-# Clean up steps prior to flattening
-RUN yum clean all \
+    && make clean \
+    && ldconfig -v \
+    && find /usr/local \
+      \( -type d -a -name test -o -name tests \) \
+      -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+      -exec rm -rf '{}' + \
     && rm -rf /usr/src/python
