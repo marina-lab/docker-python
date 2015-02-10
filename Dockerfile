@@ -5,6 +5,9 @@ MAINTAINER sprin
 # Disable fastermirror plugin - not using it is actually faster.
 RUN sed -ri 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/fastestmirror.conf
 
+# Set LANG and LC_ALL
+ENV LANG='en_US.UTF-8' LC_ALL='en_US.UTF-8' PYTHONIOENCODING='UTF-8'
+
 # Install Python deps
 RUN yum install -y \
     tar \
