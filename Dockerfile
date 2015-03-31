@@ -8,6 +8,9 @@ RUN sed -ri 's/^enabled=1/enabled=0/' /etc/yum/pluginconf.d/fastestmirror.conf
 # Set LANG and LC_ALL
 ENV LANG='en_US.UTF-8' LC_ALL='en_US.UTF-8' PYTHONIOENCODING='UTF-8'
 
+# Install EPEL
+RUN yum install -y epel-release && yum clean all
+
 # Install Python deps
 RUN yum install -y \
     tar \
@@ -18,7 +21,14 @@ RUN yum install -y \
     sqlite-devel \
     bzip2-devel \
     libxslt-devel \
-    postgresql-devel \
+    && yum clean all
+
+# Install Postgres client tools for the currently-used version of Postgres
+RUN yum install -y \
+    http://yum.postgresql.org/9.4/redhat/rhel-7-x86_64/pgdg-centos94-9.4-1.noarch.rpm; \
+    yum install -y \
+    postgresql94 \
+    postgresql94-devel \
     && yum clean all
 
 # You may want to verify the download with gpg: https://www.python.org/download
