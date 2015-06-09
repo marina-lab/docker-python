@@ -31,10 +31,13 @@ RUN yum install -y \
     postgresql94-devel \
     && yum clean all
 
+# Add Postgres bin dir to path
+ENV PATH /usr/pgsql-9.4/bin:$PATH
+
 # You may want to verify the download with gpg: https://www.python.org/download
 RUN set -x \
     && mkdir -p /usr/src/python \
-    && curl -Sl "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz" \
+    && curl -Sl "https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tar.xz" \
         | tar -xJC /usr/src/python --strip-components=1 \
     && cd /usr/src/python \
     && ./configure \
